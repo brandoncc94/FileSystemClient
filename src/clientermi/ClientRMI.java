@@ -51,7 +51,7 @@ public class ClientRMI {
                         Request request = new Request();
                         request.setRegistry("127.0.0.1", 1099);
                         request.setService("MKDIR");
-                        System.out.println("Digite el nombre del directorio: ");
+                        System.out.print("Digite el nombre del directorio: ");
                         String dirName = scanIn.nextLine();
                         request.getService().MKDIR(dirName);
                     }catch(RemoteException | NotBoundException | NumberFormatException e){
