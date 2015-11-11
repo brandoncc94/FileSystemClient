@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class ClientRMI {
 
-    private void showMenu(){
+    private void showMenu() throws RemoteException, NotBoundException{
         while(true){
             System.out.println("****************************");
             System.out.println("\t    Menú");
@@ -32,13 +32,10 @@ public class ClientRMI {
             System.out.print("Digite una opción: ");
             Scanner scanIn = new Scanner(System.in);
             String opc = scanIn.nextLine();
-            
+            Request request = new Request();
             switch(opc){
                 case "1":
                     try{
-                        Request request = new Request();
-                        request.setRegistry("127.0.0.1", 1099);
-                        request.setService("CREATE");
                         System.out.print("Digite el tamaño del disco virtual: ");
                         int size = Integer.parseInt(scanIn.nextLine());
                         request.getService().create(size);
@@ -48,13 +45,10 @@ public class ClientRMI {
                     break;
                 case "2":
                     try{
-                        Request request = new Request();
-                        request.setRegistry("127.0.0.1", 1099);
-                        request.setService("MKDIR");
                         System.out.print("Digite el nombre del directorio: ");
                         String dirName = scanIn.nextLine();
                         request.getService().MKDIR(dirName);
-                    }catch(RemoteException | NotBoundException | NumberFormatException e){
+                    }catch(RemoteException | NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
@@ -64,7 +58,7 @@ public class ClientRMI {
         }
     }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, RemoteException, NotBoundException {
         ClientRMI client = new ClientRMI();
         client.showMenu();
     } 
