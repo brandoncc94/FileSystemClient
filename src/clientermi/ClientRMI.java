@@ -10,50 +10,50 @@ import java.util.Scanner;
 public class ClientRMI {
 
     private void showMenu() throws RemoteException, NotBoundException{
+        Request request = new Request();
+        Scanner scanIn = new Scanner(System.in);
+        System.out.print("Digite el tamaño del disco virtual: ");
+        int size = Integer.parseInt(scanIn.nextLine());
+        String root = request.getService().create(size);
         while(true){
-            System.out.println("****************************");
-            System.out.println("\t    Menú");
-            System.out.println("1.CREATE.");
-            System.out.println("2.MKDIR.");
-            System.out.println("3.FILE.");
-            System.out.println("4.CD.");
-            System.out.println("5.LS.");
-            System.out.println("6.DU.");
-            System.out.println("7.PWD.");
-            System.out.println("8.CAT.");
-            System.out.println("9.CPY.");
-            System.out.println("10.MV.");
-            System.out.println("11.RM.");
-            System.out.println("12.FIND.");
-            System.out.println("13.TREE.");
-            System.out.println("14.EXIT.");
-            System.out.println("****************************\n");
-            
-            System.out.print("Digite una opción: ");
-            Scanner scanIn = new Scanner(System.in);
-            String opc = scanIn.nextLine();
-            Request request = new Request();
-            switch(opc){
-                case "1":
+            String path = request.getService().getPath(root);
+            System.out.print(path+">");
+            String[] params = scanIn.nextLine().split(" ");
+            params[0] = params[0].toLowerCase();
+            switch(params[0]){
+                case "cd":
                     try{
-                        System.out.print("Digite el tamaño del disco virtual: ");
-                        int size = Integer.parseInt(scanIn.nextLine());
-                        request.getService().create(size);
+                        if(!(params.length > 1)){
+                            System.out.println("Faltan parametros en comando");
+                            break;
+                        }else{
+                            boolean accessed = request.getService().cd(params[1], root);
+                            if(!accessed){
+                                System.out.println("No se pudo encontrar el path");
+                                break;
+                            }
+                        }
                     }catch(Exception e){
                         System.out.println(e.getMessage());
                     }
                     break;
-                case "2":
+                case "mkdir":
                     try{
-                        System.out.print("Digite el nombre del directorio: ");
-                        String dirName = scanIn.nextLine();
-                        request.getService().MKDIR(dirName);
+                        if(!(params.length > 1)){
+                            System.out.println("Faltan parametros en comando");
+                            break;
+                        }else{
+                            request.getService().mkdir(params[1],root);
+                        }
                     }catch(RemoteException | NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
-                case "14":
+                case "exit":
                     System.exit(0);
+                    break;
+                default:
+                    System.out.println("Comando Invalido");
             }
         }
     }
