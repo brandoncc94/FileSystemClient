@@ -5,6 +5,7 @@ import RMI.Request;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ClientRMI {
@@ -26,7 +27,7 @@ public class ClientRMI {
                 case "cd":
                     try{
                         if(!(params.length > 1)){
-                            System.out.println("Faltan parametros en comando");
+                            System.out.println("Faltan parámetros en comando");
                             break;
                         }else{
                             boolean accessed = request.getService().cd(params[1], root);
@@ -56,7 +57,7 @@ public class ClientRMI {
                 case "mv": //MOVE FILE OR DIRECTORY
                     try{
                         if(!(params.length > 1)){
-                            System.out.println("Faltan parametros en comando");
+                            System.out.println("Faltan parámetros en comando");
                             break;
                         }else{
                             boolean moved = request.getService().mv(params,root);
@@ -73,15 +74,55 @@ public class ClientRMI {
                 case "mkdir":
                     try{
                         if(!(params.length > 1)){
-                            System.out.println("Faltan parametros en comando");
+                            System.out.println("Faltan parámetros en comando");
                             break;
                         }else{
                             boolean created = request.getService().mkdir(params[1],root);
                             if(created){
                                 System.out.println("Directorio creado exitosamente.");
                             }else{
-                                System.out.println("No se puede crear directorio con este nombre."); 
+                                System.out.println("No se puede crear el directorio con este nombre."); 
                             }
+                        }
+                    }catch(RemoteException | NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
+                case "file":
+                    try{
+                        if(!(params.length > 1)){
+                            System.out.println("Faltan parámetros en comando");
+                            break;
+                        }else{
+                            String filenamePath = params[1];
+                            String[] content = Arrays.copyOfRange(params, 2, params.length);
+                            String joinedContent = String.join(" ", content);
+                            
+                            boolean created = request.getService().createFile(filenamePath, 
+                                    joinedContent, request.getService().getPath(root), root);
+                            if(created){
+                                System.out.println("Archivo creado exitosamente.");
+                            }else{
+                                System.out.println("No se puede crear el archivo con este nombre."); 
+                            }
+                        }
+                    }catch(RemoteException | NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
+                case "cat":
+                    try{
+                        if(!(params.length > 1)){
+                            System.out.println("Faltan parámetros en el comando.");
+                            break;
+                        }else{
+                            String[] filenames = Arrays.copyOfRange(params, 1, params.length);
+                            String content = request.getService().cat(filenames, root);
+                            if(content.equals(""))
+                                System.out.println("No se encuentra el archivo con el nombre: " + params[1]);
+                            else 
+                                System.out.println(content);
+                            
                         }
                     }catch(RemoteException | NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
@@ -91,7 +132,7 @@ public class ClientRMI {
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("Comando Invalido");
+                    System.out.println("Comando Inválido");
             }
         }
     }
