@@ -56,15 +56,32 @@ public class ClientRMI {
                     break;
                 case "mv": //MOVE FILE OR DIRECTORY
                     try{
-                        if(!(params.length > 1)){
+                        if(!(params.length >= 3)){
                             System.out.println("Faltan parámetros en comando");
                             break;
                         }else{
                             boolean moved = request.getService().mv(params,root);
                             if(moved){
-                                System.out.println("Directorio creado exitosamente.");
+                                System.out.println("Elemento movido correctamente.");
                             }else{
-                                System.out.println("No se puede crear directorio con este nombre."); 
+                                System.out.println("No se ha podido mover el elemento."); 
+                            }
+                        }
+                    }catch(RemoteException | NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
+                case "du": //Size of file or directory
+                    try{
+                        if(!(params.length >= 2)){
+                            System.out.println("Faltan parámetros en comando du");
+                            break;
+                        }else{
+                            int sizeElement = request.getService().du(params[1],root);
+                            if(sizeElement == -1){
+                                System.out.println("Elemento no existe.");
+                            }else{
+                                System.out.println("El tamaño de "+ params[1] + "es : " + sizeElement + " KB."); 
                             }
                         }
                     }catch(RemoteException | NumberFormatException e){
