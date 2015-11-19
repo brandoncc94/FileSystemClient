@@ -13,7 +13,7 @@ public class ClientRMI {
     private void showMenu() throws RemoteException, NotBoundException{
         Request request = new Request();
         Scanner scanIn = new Scanner(System.in);
-        System.out.print("Digite el tamaño del disco virtual: ");
+        System.out.print("Digite el tamaño(Kb) del disco virtual: ");
         int size = Integer.parseInt(scanIn.nextLine());
         String root = request.getService().create(size);
         while(true){
@@ -125,6 +125,26 @@ public class ClientRMI {
                             
                         }
                     }catch(RemoteException | NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
+                case "rm":
+                    try{
+                        if(!(params.length > 1)){
+                            System.out.println("Faltan parámetros en el comando.");
+                            break;
+                        }else{
+                            boolean dir = false;
+                            String[] filenames = Arrays.copyOfRange(params, 1, params.length);
+                            if(filenames[0].equals("-r"))
+                                dir = true;
+                            
+                            boolean removed = request.getService().rm(filenames, dir ,root);
+                            if(!removed)
+                                System.out.println("Hubo un problema al eliminar uno o más archivos o directorios.");
+                            
+                        }
+                    }catch(NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
