@@ -17,7 +17,7 @@ public class ClientRMI {
         int size = Integer.parseInt(scanIn.nextLine());
         String root = request.getService().create(size);
         while(true){
-            String path = request.getService().getPath(root);
+            String path = request.getService().getActualPath(root);
             System.out.print(path+">");
             String message = scanIn.nextLine();
             //Quita espacios antes de la entrada y espacios entre palabra se reducen a 1
@@ -49,7 +49,7 @@ public class ClientRMI {
                     break;
                 case "pwd":
                     try{
-                        System.out.println("El directorio actual es: "+request.getService().getPath(root));
+                        System.out.println("El directorio actual es: "+request.getService().getActualPath(root));
                     }catch(Exception e){
                         System.out.println(e.getMessage());
                     }
@@ -116,7 +116,7 @@ public class ClientRMI {
                             String joinedContent = String.join(" ", content);
                             
                             boolean created = request.getService().createFile(filenamePath, 
-                                    joinedContent, request.getService().getPath(root), root);
+                                    joinedContent, request.getService().getActualPath(root), root);
                             if(created){
                                 System.out.println("Archivo creado exitosamente.");
                             }else{
