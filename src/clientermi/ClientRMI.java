@@ -155,7 +155,6 @@ public class ClientRMI {
                             String[] filenames = Arrays.copyOfRange(params, 1, params.length);
                             if(filenames[0].equals("-r"))
                                 dir = true;
-                            
                             boolean removed = request.getService().rm(filenames, dir ,root);
                             if(!removed)
                                 System.out.println("Hubo un problema al eliminar uno o más archivos o directorios.");
