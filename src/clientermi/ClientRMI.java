@@ -81,9 +81,17 @@ public class ClientRMI {
                             if(sizeElement == -1){
                                 System.out.println("Elemento no existe.");
                             }else{
-                                System.out.println("El tamaño de "+ params[1] + "es : " + sizeElement + " KB."); 
+                                System.out.println("El tamaño de "+ params[1] + " es : " + sizeElement + " KB."); 
                             }
                         }
+                    }catch(RemoteException | NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
+                case "tree": //Tree of current directory
+                    try{
+                        String tree = request.getService().tree(root);
+                        System.out.println(tree);
                     }catch(RemoteException | NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
