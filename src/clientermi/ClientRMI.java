@@ -164,6 +164,22 @@ public class ClientRMI {
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
+                case "find":
+                    try{
+                        if(!(params.length == 2)){
+                            System.out.println("Faltan parámetros en el comando o se insertaron más de 2.");
+                            break;
+                        }else{
+                            String content = request.getService().find(params[1], root);
+                            if(content.equals(""))
+                                System.out.println("No se encuentra el archivo o directorio con el nombre: " + params[1]);
+                            else 
+                                System.out.println(content);
+                        }
+                    }catch(NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
                 case "exit":
                     System.exit(0);
                     break;
