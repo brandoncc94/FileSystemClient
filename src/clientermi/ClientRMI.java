@@ -188,6 +188,37 @@ public class ClientRMI {
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
+                case "cpy":
+                    try{
+                        if(!(params.length == 3 || params.length == 4)){
+                            System.out.println("Faltan parámetros en el comando o se insertaron más de 3 o 4.");
+                            break;
+                        }else{
+                            int type = 0;
+                            String[] paths = Arrays.copyOfRange(params, 2, params.length);;
+                            if(params.length == 3){
+                                type = 1;
+                                paths = Arrays.copyOfRange(params, 1, params.length);
+                            }
+                            else if(params[1].equals("rv"))
+                                type = 2;
+                            else if(params[1].equals("vr"))
+                                type = 3;
+                            
+                            if(type ==0)
+                                System.out.println("No se reconoce el valor insertado en el comando CPY.");
+                            else{                                
+                                boolean copied = request.getService().cpy(paths, type, root);
+                                if(!copied)
+                                    System.out.println("No se pueden copiar las rutas indicadas.");
+                                else 
+                                    System.out.println("Archivos/Directorios copiados correctamente.");
+                            }
+                        }
+                    }catch(NumberFormatException e){
+                        System.out.println("Error: " + e.getLocalizedMessage());
+                    }
+                    break;
                 case "exit":
                     System.exit(0);
                     break;
