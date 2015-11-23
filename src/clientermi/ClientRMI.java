@@ -102,11 +102,19 @@ public class ClientRMI {
                             System.out.println("Faltan parámetros en comando");
                             break;
                         }else{
-                            boolean created = request.getService().mkdir(params[1],root);
-                            if(created){
+                            int created = request.getService().mkdir(params[1],root,false);
+                            if(created>0){
                                 System.out.println("Directorio creado exitosamente.");
                             }else{
-                                System.out.println("No se puede crear el directorio con este nombre."); 
+                                System.out.println("Existe un directorio con el mismo nombre.¿Desea sobreescribirlo? Si/No");
+                                message = scanIn.nextLine();
+                                message = message.toLowerCase();
+                                if(message.equals("si")){
+                                    request.getService().mkdir(params[1],root,true);
+                                    System.out.println("Directorio sobreescribido exitosamente.");
+                                }else{
+                                    System.out.println("No se puede crear el directorio con este nombre."); 
+                                }
                             }
                         }
                     }catch(RemoteException | NumberFormatException e){
@@ -122,13 +130,33 @@ public class ClientRMI {
                             String filenamePath = params[1];
                             String[] content = Arrays.copyOfRange(params, 2, params.length);
                             String joinedContent = String.join(" ", content);
-                            
-                            boolean created = request.getService().createFile(filenamePath, 
-                                    joinedContent, request.getService().getActualPath(root), root);
-                            if(created){
+                            int created = request.getService().createFile(filenamePath, 
+                                    joinedContent, request.getService().getActualPath(root), root,false);
+                            if(created==1){
                                 System.out.println("Archivo creado exitosamente.");
+                                break;
                             }else{
-                                System.out.println("No se puede crear el archivo con este nombre."); 
+                                if(created==0){
+                                    System.out.println("Existe un archivo con el mismo nombre.¿Desea sobreescribirlo? Si/No");
+                                    message = scanIn.nextLine();
+                                    message = message.toLowerCase();
+                                    if(message.equals("si")){
+                                        request.getService().createFile(filenamePath, 
+                                                joinedContent, request.getService().getActualPath(root), root,true);
+                                        System.out.println("Archivo sobreescribido exitosamente.");
+                                        break;
+                                    }else{
+                                        System.out.println("No se puede crear el archivo con este nombre."); 
+                                        break;
+                                    }    
+                                }
+                                if(created == -1){
+                                    System.out.println("No existe espacio disponible para crear el archivo");
+                                    break;
+                                }else{
+                                    System.out.println("No se puede crear el archivo con ese directorio."); 
+                                    break;
+                                }
                             }
                         }
                     }catch(RemoteException | NumberFormatException e){
