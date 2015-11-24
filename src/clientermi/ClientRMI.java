@@ -13,8 +13,16 @@ public class ClientRMI {
     private void showMenu() throws RemoteException, NotBoundException{
         Request request = new Request();
         Scanner scanIn = new Scanner(System.in);
-        System.out.print("Digite el tamaño(Kb) del disco virtual: ");
-        int size = Integer.parseInt(scanIn.nextLine());
+        int size;
+        while(true){
+            try{
+                System.out.print("Digite el tamaño(bytes) del disco virtual: ");
+                size = Integer.parseInt(scanIn.nextLine());
+                break;
+            }catch(Exception e){
+                System.out.println("Tamaño ingresado incorrecto.");
+            }
+        }
         String root = request.getService().create(size);
         while(true){
             String path = request.getService().getActualPath(root);
@@ -86,7 +94,7 @@ public class ClientRMI {
                             if(sizeElement == -1){
                                 System.out.println("Elemento no existe.");
                             }else{
-                                System.out.println("El tamaño de "+ params[1] + " es : " + sizeElement + " KB."); 
+                                System.out.println("El tamaño de "+ params[1] + " es : " + sizeElement + " bytes."); 
                             }
                         }
                     }catch(RemoteException | NumberFormatException e){
