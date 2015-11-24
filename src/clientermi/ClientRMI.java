@@ -21,7 +21,12 @@ public class ClientRMI {
             System.out.print(path+">");
             String message = scanIn.nextLine();
             //Quita espacios antes de la entrada y espacios entre palabra se reducen a 1
-            String[] params = message.trim().replaceAll("( )+", " ").split(" ");
+            message = message.trim().replaceAll("Juan Carlos", "JuanCarlos");
+            message = message.trim().replaceAll("( )+", " ");
+            String[] params = message.split(" ");
+            for(int i = 0; i < params.length; i++)
+                params[i] = params[i].replaceAll("JuanCarlos", "Juan Carlos");
+            
             params[0] = params[0].toLowerCase();
             switch(params[0]){
                 case "cd":
@@ -170,14 +175,15 @@ public class ClientRMI {
                             break;
                         }else{
                             String[] filenames = Arrays.copyOfRange(params, 1, params.length);
-                            String content = request.getService().cat(filenames, root);
-                            if(content.equals(""))
-                                System.out.println("No se encuentra el archivo con el nombre: " + params[1]);
-                            else 
-                                System.out.println(content);
-                            
+                            try{
+                                String content = request.getService().cat(filenames, root);
+                                if(content.equals(""))
+                                    System.out.println("No se encuentra el archivo con el nombre: " + params[1]);
+                                else 
+                                    System.out.println(content);
+                            }catch(Exception e) { System.out.println("No se encuentra el archivo con el nombre: " + params[1]); }                            
                         }
-                    }catch(RemoteException | NumberFormatException e){
+                    }catch(NumberFormatException e){
                         System.out.println("Error: " + e.getLocalizedMessage());
                     }
                     break;
@@ -225,9 +231,9 @@ public class ClientRMI {
                                 type = 1;
                                 paths = Arrays.copyOfRange(params, 1, params.length);
                             }
-                            else if(params[1].equals("rv"))
+                            else if(params[1].equals("-rv"))
                                 type = 2;
-                            else if(params[1].equals("vr"))
+                            else if(params[1].equals("-vr"))
                                 type = 3;
                             
                             if(type ==0)
